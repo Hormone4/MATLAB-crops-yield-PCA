@@ -62,6 +62,6 @@ L
 F = Xs * U
 
 % Compute the saturation matrix (coordinates of variables in the new basis)
-S = Xs' * F * L
+S = Xs' * F * L^-1/2
 
 
