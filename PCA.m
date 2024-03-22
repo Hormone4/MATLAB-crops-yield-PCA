@@ -129,3 +129,23 @@ title('Graphical presentation plan 1-3');
 grid on
 hold off
 
+
+
+% Find indices where values of qlt(:, 1) are greater than 0.1
+% Indices represent the countries well represented by axis 1
+indices = qlt(:, 2) > 0.01;  % We consider the first column of 'qlt'
+% Filter rows from 'coord' using the indices where 'qlt' > 0.1
+filtered_coord = coord(indices, :);
+% Plot the values with x component from the 1st column and y component from the 2nd column
+plot(filtered_coord(:, 2), filtered_coord(:, 3), 'g+');
+hold on
+
+% Same for indices where values of qlt(:, 2) are greater than 0.001
+% Indices represent the countries well represented by axis 3
+indices = qlt(:, 3) > 0.001;
+filtered_coord = coord(indices, :);
+plot(filtered_coord(:, 1), filtered_coord(:, 3), 'g+');% 'bo');
+
+title('Graphical presentation plan 2-3');
+grid on
+hold off
