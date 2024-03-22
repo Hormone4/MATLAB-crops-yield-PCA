@@ -16,7 +16,7 @@ clearvars excelFile
 data(:, [2, 3]) = [];
 data.COUNTRY = []
 
-Descriptive statistics
+%% Descriptive statistics
 %summary(data)
 
 %% PCA
