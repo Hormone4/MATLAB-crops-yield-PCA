@@ -13,7 +13,7 @@ data = readtable(excelFile, 'Sheet', 3);
 clearvars excelFile
 
 % Remove the duplicate name columns
-data(:, [2, 3]) = [];
+data.Fips_code = []
 data.COUNTRY = []
 
 %% Descriptive statistics
@@ -22,6 +22,7 @@ data.COUNTRY = []
 %% PCA
 % Original matrix
 temp = data;
+temp(:, 1) = [];
 temp(:, 1) = [];   % remove all columns containing strings
 X = table2array(temp);
 X(isnan(X)) = 0;
@@ -78,7 +79,7 @@ coord = [F(1:end,153:-1:150)]
 
 % Compute the qlt
 temp = coord.^2;
-temp = sum(temp)
+temp = sum(temp);
 
 qlt = coord;
 for i=1:4
@@ -89,63 +90,116 @@ end
 clearvars i j
 qlt
 
+%% Graphical presentation plan 1-2
+col1 = 1;
+col2 = 2;
+style = 'r+';
+
 % Find indices where values of qlt(:, 1) are greater than 0.1
 % Indices represent the countries well represented by axis 1
-indices = qlt(:, 1) > 0.01  % We consider the first column of 'qlt'
+indices = qlt(:, col1) > 0.01;  % We consider the first column of 'qlt'
 % Filter rows from 'coord' using the indices where 'qlt' > 0.1
 filtered_coord = coord(indices, :);
 % Plot the values with x component from the 1st column and y component from the 2nd column
-plot(filtered_coord(:, 1), filtered_coord(:, 2), 'r+');
+plot(filtered_coord(:, col1), filtered_coord(:, col2), style);
 hold on
+
+% Plot text labels for each point
+country_names = data.ISO3v10(indices);
+for i = 1:length(country_names)
+    text(filtered_coord(i, col1), filtered_coord(i, col2), country_names{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+end
 
 % Same for indices where values of qlt(:, 2) are greater than 0.001
 % Indices represent the countries well represented by axis 2
-indices = qlt(:, 2) > 0.001;
+indices = qlt(:, col2) > 0.001;
 filtered_coord = coord(indices, :);
-plot(filtered_coord(:, 1), filtered_coord(:, 2), 'r+');% 'bo');
+plot(filtered_coord(:, col1), filtered_coord(:, col2), style);% 'bo');
 
-title('Graphical presentation plan 1-2');
+% Plot text labels for each point
+country_names = data.ISO3v10(indices);
+for i = 1:length(country_names)
+    text(filtered_coord(i, col1), filtered_coord(i, col2), country_names{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+end
+
+title(sprintf('Graphical presentation plan %d-%d', col1, col2));
 grid on
+xlim([-max(abs(filtered_coord(:, col1))), max(abs(filtered_coord(:, col1)))]);
+ylim([-max(abs(filtered_coord(:, col2))), max(abs(filtered_coord(:, col2)))]);
 hold off
 
-
+%% Graphical presentation plan 1-3
+col1 = 1;
+col2 = 3;
+style = 'b+';
 
 % Find indices where values of qlt(:, 1) are greater than 0.1
 % Indices represent the countries well represented by axis 1
-indices = qlt(:, 1) > 0.01;  % We consider the first column of 'qlt'
+indices = qlt(:, col1) > 0.01;  % We consider the first column of 'qlt'
 % Filter rows from 'coord' using the indices where 'qlt' > 0.1
 filtered_coord = coord(indices, :);
 % Plot the values with x component from the 1st column and y component from the 2nd column
-plot(filtered_coord(:, 1), filtered_coord(:, 3), 'b+');
+plot(filtered_coord(:, col1), filtered_coord(:, col2), style);
 hold on
 
-% Same for indices where values of qlt(:, 2) are greater than 0.001
-% Indices represent the countries well represented by axis 3
-indices = qlt(:, 3) > 0.001;
-filtered_coord = coord(indices, :);
-plot(filtered_coord(:, 1), filtered_coord(:, 3), 'b+');% 'bo');
+% Plot text labels for each point
+country_names = data.ISO3v10(indices);
+for i = 1:length(country_names)
+    text(filtered_coord(i, col1), filtered_coord(i, col2), country_names{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+end
 
-title('Graphical presentation plan 1-3');
+% Same for indices where values of qlt(:, 2) are greater than 0.001
+% Indices represent the countries well represented by axis 2
+indices = qlt(:, col2) > 0.001;
+filtered_coord = coord(indices, :);
+plot(filtered_coord(:, col1), filtered_coord(:, col2), style);% 'bo');
+
+% Plot text labels for each point
+country_names = data.ISO3v10(indices);
+for i = 1:length(country_names)
+    text(filtered_coord(i, col1), filtered_coord(i, col2), country_names{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+end
+
+title(sprintf('Graphical presentation plan %d-%d', col1, col2));
 grid on
+xlim([-max(abs(filtered_coord(:, col1))), max(abs(filtered_coord(:, col1)))]);
+ylim([-max(abs(filtered_coord(:, col2))), max(abs(filtered_coord(:, col2)))]);
 hold off
 
-
+%% Graphical presentation plan 2-3
+col1 = 2;
+col2 = 3;
+style = 'g+';
 
 % Find indices where values of qlt(:, 1) are greater than 0.1
 % Indices represent the countries well represented by axis 1
-indices = qlt(:, 2) > 0.01;  % We consider the first column of 'qlt'
+indices = qlt(:, col1) > 0.001;  % We consider the first column of 'qlt'
 % Filter rows from 'coord' using the indices where 'qlt' > 0.1
 filtered_coord = coord(indices, :);
 % Plot the values with x component from the 1st column and y component from the 2nd column
-plot(filtered_coord(:, 2), filtered_coord(:, 3), 'g+');
+plot(filtered_coord(:, col1), filtered_coord(:, col2), style);
 hold on
 
-% Same for indices where values of qlt(:, 2) are greater than 0.001
-% Indices represent the countries well represented by axis 3
-indices = qlt(:, 3) > 0.001;
-filtered_coord = coord(indices, :);
-plot(filtered_coord(:, 1), filtered_coord(:, 3), 'g+');% 'bo');
+% Plot text labels for each point
+country_names = data.ISO3v10(indices);
+for i = 1:length(country_names)
+    text(filtered_coord(i, col1), filtered_coord(i, col2), country_names{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+end
 
-title('Graphical presentation plan 2-3');
+% Same for indices where values of qlt(:, 2) are greater than 0.001
+% Indices represent the countries well represented by axis 2
+indices = qlt(:, col2) > 0.001;
+filtered_coord = coord(indices, :);
+plot(filtered_coord(:, col1), filtered_coord(:, col2), style);% 'bo');
+
+% Plot text labels for each point
+country_names = data.ISO3v10(indices);
+for i = 1:length(country_names)
+    text(filtered_coord(i, col1), filtered_coord(i, col2), country_names{i}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+end
+
+title(sprintf('Graphical presentation plan %d-%d', col1, col2));
 grid on
+xlim([-max(abs(filtered_coord(:, col1))), max(abs(filtered_coord(:, col1)))]);
+ylim([-max(abs(filtered_coord(:, col2))), max(abs(filtered_coord(:, col2)))]);
 hold off
